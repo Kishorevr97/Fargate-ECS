@@ -10,5 +10,4 @@ cluster_name = "dev-cluster"
 repo_name    = "dev-repo"
 
 lb_name         = "dev-alb"
-public_subnet_ids = ["subnet-xxxxxx", "subnet-yyyyyy"]
 security_groups  = ["sg-xxxxxx"]
