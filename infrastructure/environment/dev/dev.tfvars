@@ -11,4 +11,4 @@ repo_name    = "dev-repo"
 
 lb_name         = "dev-alb"
 security_groups  = ["sg-xxxxxx"]
-public_subnet = module.vpc.public_subnets
+public_subnet_ids = module.vpc.public_subnets
