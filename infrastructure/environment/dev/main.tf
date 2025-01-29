@@ -30,7 +30,7 @@ module "ecr" {
 module "alb" {
   source            = "../../modules/alb"
   lb_name           = "dev-alb"
-  public_subnet_ids = module.vpc.public_subnets
+  public_subnet_ids = var.public_subnet_ids
   security_groups   = [module.iam.ecs_sg_id]
 }
 
