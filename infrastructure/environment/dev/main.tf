@@ -18,6 +18,7 @@ module "ecs" {
 
 module "iam" {
   source = "../../modules/iam"
+  vpc_id = module.vpc.vpc_id
 }
 
 module "ecr" {
