@@ -12,7 +12,3 @@ variable "security_groups" {
   description = "List of security group IDs for the ALB"
   type        = list(string)
 }
-
-variable "empty" {
- type = string
-}
