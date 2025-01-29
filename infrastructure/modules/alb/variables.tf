@@ -3,7 +3,7 @@ variable "lb_name" {
   type        = string
 }
 
-variable "public_subnet_ids" {
+variable "public_subnet" {
   description = "List of public subnet IDs for the ALB"
   type        = list(string)
 }
