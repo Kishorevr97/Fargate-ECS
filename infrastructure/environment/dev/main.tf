@@ -28,7 +28,7 @@ module "ecr" {
 module "alb" {
   source = "../../modules/alb"
   lb_name = "dev-alb"
-  public_subnet_ids = module.vpc.public_subnet
+  public_subnet = module.vpc.public_subnet
   security_groups = [module.iam.ecs_sg_id]
 }
 
