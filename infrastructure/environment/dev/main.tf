@@ -4,11 +4,11 @@ provider "aws" {
 
 module "vpc" {
   source          = "../../modules/vpc"
-  vpc_cidr        = "10.0.0.0/16"
+  vpc_cidr        = var.vpc_cidr
   vpc_name        = "dev-vpc"
-  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
-  azs             = ["eu-north-1a", "eu-north-1b"]
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
+  azs             = var.azs
 }
 
 module "ecs" {
