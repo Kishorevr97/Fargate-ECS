@@ -14,5 +14,5 @@ variable "security_groups" {
 }
 
 variable "empty" {
-
+ type = string
 }
