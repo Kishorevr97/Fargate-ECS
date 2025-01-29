@@ -11,3 +11,24 @@ module "vpc" {
   azs             = ["eu-north-1a", "eu-north-1b"]
 }
 
+module "ecs" {
+  source = "../../modules/ecs"
+  cluster_name = "dev-cluster"
+}
+
+module "iam" {
+  source = "../../modules/iam"
+}
+
+module "ecr" {
+  source = "../../modules/ecr"
+  repo_name = "dev-repo"
+}
+
+module "alb" {
+  source = "../../modules/alb"
+  lb_name = "dev-alb"
+  public_subnet_ids = module.vpc.public_subnet_ids
+  security_groups = [module.iam.ecs_sg_id]
+}
+
