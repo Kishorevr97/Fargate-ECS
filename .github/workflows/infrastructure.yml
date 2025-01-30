@@ -56,6 +56,16 @@ jobs:
         cd infrastructure/environment/${{ github.event.inputs.environment }}
         terraform init
 
+    - name: Install & Configure TFLint
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        tflint --init
+         
+    - name: validate tf configuration
+      run: |
+        tflint
+        continue-on-error: true
+
     - name: Select Workspace
       run: terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
 
