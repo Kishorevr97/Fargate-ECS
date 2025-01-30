@@ -1,5 +1,13 @@
-variable "ecs_task_execution_role_name" {
-  description = "Name of the IAM role for ECS task execution"
+variable "vpc_id" {
+  description = "VPC ID for the security group"
+  type = string
+}
+
+variable "environment" {
+  description = "Environment name (e.g., dev, staging, prod)"
+  type = string
+}
+variable "execution_role_policy_arn" {
+  description = "ARN of the IAM policy for ECS task execution"
   type        = string
-  default     = "ecsTaskExecutionRole"
 }
