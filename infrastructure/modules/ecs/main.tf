@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   cpu                     = "1 vCPU"
 }
 
-resource "aws_ecs_service" "ecs_service" {
+resource "aws_ecs_service" "patient-service" {
   name            = "patient-service"
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.task_definition.arn
