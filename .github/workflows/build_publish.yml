@@ -30,7 +30,7 @@ jobs:
       - name: Build Docker image appointment-service
         run: |
           docker build -t development-env-appointment-service-repo ./app
-          docker tag development-env-appointment-service-repo:latest 084828605119.dkr.ecr.eu-north-1.amazonaws.com/development-env-appointment-service-repo:latest
+          docker tag development-env-appointment-service-repo:latest1 084828605119.dkr.ecr.eu-north-1.amazonaws.com/development-env-appointment-service-repo:latest1
           
       - name: Build Docker image patient-service
         run: |
