@@ -1,23 +1,20 @@
-variable "lb_name" {
-  description = "Name of the Application Load Balancer"
-  type        = string
+
+variable "alb_security_group_id" {
+  description = "Security group ID for the ALB"
+  type = string
 }
-
-
-variable "public_subnet" {
-  description = "List of public subnet IDs where the ALB should be deployed"
-  type        = list(string)
-}
-
-variable "security_groups" {
-  description = "List of security group IDs for the ALB"
-  type        = list(string)
-}
-
-
 
 variable "public_subnet_ids" {
-  description = "List of public subnet IDs where the ALB should be deployed"
-  type        = list(string)
+  description = "Public subnet ID for the ALB"
+  type = list(string)
 }
 
+variable "vpc_id" {
+  description = "VPC ID"
+  type = string
+}
+
+variable "environment" {
+  description = "Environment name (e.g., dev, staging, prod)"
+  type = string
+}
