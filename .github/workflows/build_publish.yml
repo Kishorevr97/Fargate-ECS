@@ -1,9 +1,10 @@
 name: Build and Push to ECR
 
 on:
-  push:
-    branches:
-      - main  # Change to your deployment branch
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main  # Change to your deployment branch
 
 jobs:
   build-and-push:
@@ -14,12 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+     
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+         aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+         aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+         aws-region: eu-north-1
 
       - name: Log in to Amazon ECR
         id: login-ecr
@@ -27,14 +29,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          IMAGE_TAG=$(git rev-parse --short HEAD)  # Use commit hash as image tag
-          docker build -t ${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG .
-          docker tag ${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG
+          docker build -t development-env-appointment-service-repo ./app
+          docker tag development-env-appointment-service-repo:latest 084828605119.dkr.ecr.eu-north-1.amazonaws.com/development-env-appointment-service-repo:latest
 
       - name: Push Docker image to ECR
         run: |
-          IMAGE_TAG=$(git rev-parse --short HEAD)
-          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG
-
-      - name: Output Image URL
-        run: echo "Image pushed to ECR: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG"
+          docker push 084828605119.dkr.ecr.eu-north-1.amazonaws.com/development-env-appointment-service-repo:latest
+  
