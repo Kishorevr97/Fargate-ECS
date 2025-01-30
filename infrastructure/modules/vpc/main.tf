@@ -1,35 +1,31 @@
 resource "aws_vpc" "main" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_support   = true
+  cidr_block = var.vpc_cidr
+  enable_dns_support = true
   enable_dns_hostnames = true
-
   tags = {
-    Name = var.vpc_name
+    Name = "${var.environment}-vpc"
   }
 }
 
-resource "aws_subnet" "public" {
-  count = length(var.public_subnets)
-
+resource "aws_subnet" "public_subnet" {
+  count                   = length(var.availability_zones)
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnets[count.index]
+  cidr_block              = var.public_subnet_cidr[count.index]
+  availability_zone       = element(var.availability_zones, count.index)
   map_public_ip_on_launch = true
-  availability_zone       = element(var.azs, count.index)
-
   tags = {
-    Name = "Public Subnet ${count.index + 1}"
+    Name = "${var.environment}-public-subnet-${count.index + 1}"
   }
 }
 
-resource "aws_subnet" "private" {
-  count = length(var.private_subnets)
 
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnets[count.index]
-  availability_zone = element(var.azs, count.index)
-
+resource "aws_subnet" "private_subnet" {
+  count                   = length(var.availability_zones)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.private_subnet_cidr[count.index]
+  availability_zone       = element(var.availability_zones, count.index)
   tags = {
-    Name = "Private Subnet ${count.index + 1}"
+    Name = "${var.environment}-private-subnet-${count.index + 1}"
   }
 }
 
@@ -37,9 +33,10 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.vpc_name}-igw"
+    Name = "${var.environment}-igw"
   }
 }
+
 
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.main.id
@@ -50,12 +47,12 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name = "${var.vpc_name}-public-rt"
+    Name = "${var.environment}-public-rt"
   }
 }
 
-resource "aws_route_table_association" "public_association" {
-  count          = length(var.public_subnets)
-  subnet_id      = aws_subnet.public[count.index].id
+resource "aws_route_table_association" "public" {
+  count          = length(aws_subnet.public_subnet)
+  subnet_id      = aws_subnet.public_subnet[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
