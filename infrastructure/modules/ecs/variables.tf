@@ -17,3 +17,17 @@ variable "task_role_arn" {}
 variable "ecr_patient_repo_url" {
    }
 variable "ecr_appointment_repo_url" {}
+
+
+variable "patient_tg_arn" {
+  description = "ARN of the patient service target group"
+  type        = string
+}
+
+variable "appointment_tg_arn" {
+  description = "ARN of the appointment service target group"
+  type        = string
+}
+
+
+
