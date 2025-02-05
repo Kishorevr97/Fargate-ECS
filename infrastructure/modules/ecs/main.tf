@@ -1,6 +1,29 @@
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.environment}-ecs-cluster"
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+  
 }
+
+resource "aws_cloudwatch_log_group" "ecs_patient_logs" {
+  name              = "/ecs/patient-service"
+  retention_in_days = 30
+}
+
+resource "aws_cloudwatch_log_group" "ecs_appointment_logs" {
+  name              = "/ecs/appointment-service"
+  retention_in_days = 30
+}
+
+resource "aws_cloudwatch_log_group" "xray_logs" {
+  name              = "/ecs/X-Ray"
+  retention_in_days = 30
+}
+
+
+
 
 resource "aws_ecs_task_definition" "task_definition" {
   family                = "${var.environment}-task"
@@ -18,6 +41,15 @@ resource "aws_ecs_task_definition" "task_definition" {
         containerPort = 3000
         hostPort      = 3000
       }]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/patient-service"
+          awslogs-region        = "eu-north-1"
+          awslogs-stream-prefix = "ecs"
+        }
+       }
     },
     {
       name      = "appointment-service"
@@ -29,6 +61,57 @@ resource "aws_ecs_task_definition" "task_definition" {
         containerPort = 3001
         hostPort      = 3001
       }]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/appointment-service"
+          awslogs-region        = "eu-north-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+    },
+  {
+      name      = "xray-daemon"
+      image     = "amazon/aws-xray-daemon"
+      cpu       = 50
+      memory    = 128
+      essential = true
+      portMappings = [{ 
+        containerPort = 2000
+        hostPort      = 2000
+        protocol      = "UDP"
+       }]
+      environment = [
+        {
+          name  = "AWS_REGION"
+          value = "us-west-1"  # Set your AWS region
+        },
+       {
+          name  = "AWS_XRAY_TRACING_NAME"
+          value = "appointment-service-trace"
+       },
+       {
+          name  = "AWS_XRAY_DAEMON_ADDRESS"
+          value = "xray.us-west-2.amazonaws.com:2000"
+        },
+       {
+        name  = "AWS_XRAY_DAEMON_DISABLE_METADATA"
+        value = "true"
+       },
+      {
+       name  = "AWS_XRAY_DAEMON_NO_INSTANCE_ID"
+       value = "true"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/X-Ray"
+          awslogs-region        = "us-west-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 
