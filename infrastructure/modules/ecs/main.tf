@@ -12,7 +12,7 @@ resource "aws_cloudwatch_log_group" "ecs_patient_logs" {
   retention_in_days = 30
 }
 
-resource "aws_cloudwatch_log_group" "ecs_appointment_logs" {
+/*resource "aws_cloudwatch_log_group" "ecs_appointment_logs" {
   name              = "/ecs/appointment-service"
   retention_in_days = 30
 }
@@ -20,7 +20,7 @@ resource "aws_cloudwatch_log_group" "ecs_appointment_logs" {
 resource "aws_cloudwatch_log_group" "xray_logs" {
   name              = "/ecs/X-Ray"
   retention_in_days = 30
-}
+}*/
 
 
 
@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/patient-service"
+          awslogs-group         = aws_cloudwatch_log_group.ecs_patient_logs.name
           awslogs-region        = "eu-north-1"
           awslogs-stream-prefix = "ecs"
         }
