@@ -85,7 +85,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       environment = [
         {
           name  = "AWS_REGION"
-          value = "us-west-1"  # Set your AWS region
+          value = "eu-north-1"  # Set your AWS region
         },
        {
           name  = "AWS_XRAY_TRACING_NAME"
@@ -108,7 +108,7 @@ resource "aws_ecs_task_definition" "task_definition" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/X-Ray"
-          awslogs-region        = "us-west-1"
+          awslogs-region        = "eu-north-1"
           awslogs-stream-prefix = "ecs"
         }
       }
