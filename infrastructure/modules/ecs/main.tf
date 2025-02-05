@@ -93,7 +93,7 @@ resource "aws_ecs_task_definition" "task_definition" {
        },
        {
           name  = "AWS_XRAY_DAEMON_ADDRESS"
-          value = "xray.us-west-2.amazonaws.com:2000"
+          value = "xray.eu-north-1.amazonaws.com:2000"
         },
        {
         name  = "AWS_XRAY_DAEMON_DISABLE_METADATA"
