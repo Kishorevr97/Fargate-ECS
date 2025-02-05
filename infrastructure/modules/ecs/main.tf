@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "task_definition" {
     {
       name      = "patient-service"
       image     = "${var.ecr_patient_repo_url}:latest"  # Dynamically use the ECR URL
-      cpu       = 512
+      cpu       = 256
       memory    = 1024
       essential = true
       portMappings = [{
@@ -54,7 +54,7 @@ resource "aws_ecs_task_definition" "task_definition" {
     {
       name      = "appointment-service"
       image     = "${var.ecr_appointment_repo_url}:latest"  # Dynamically use the ECR URL
-      cpu       = 512
+      cpu       = 256
       memory    = 1024
       essential = true
       portMappings = [{
