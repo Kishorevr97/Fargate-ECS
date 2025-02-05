@@ -8,6 +8,6 @@ output "ecs_task_definition_arn" {
 }
 
 
-output "log_group_name" { 
+/*output "log_group_name" { 
 value = aws_cloudwatch_log_group.ecs_logs.name
-}
+}*/
