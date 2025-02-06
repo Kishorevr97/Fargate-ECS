@@ -158,3 +158,95 @@ resource "aws_ecs_service" "appointment_service" {
     container_port   = 3001
   }
 }
+
+
+
+##prometheus##
+
+resource "aws_ecs_task_definition" "prometheus" {
+  family                   = "prometheus-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 512
+  memory                   = 1024
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "prometheus"
+      image     = "prom/prometheus:v2.37.0"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 9090
+          hostPort      = 9090
+        }
+      ]
+    }
+  ])
+}
+
+
+resource "aws_ecs_task_definition" "grafana" {
+  family                   = "grafana-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 512
+  memory                   = 1024
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "grafana"
+      image     = "grafana/grafana:9.0.0"
+      essential = true
+      environment = [
+        {
+          name  = "GF_SECURITY_ADMIN_PASSWORD"
+          value = "admin123"
+        }
+      ]
+      portMappings = [
+        {
+          containerPort = 3000
+          hostPort      = 3000
+        }
+      ]
+    }
+  ])
+}
+
+
+resource "aws_ecs_service" "prometheus" {
+  name            = "prometheus-service"
+  cluster         = aws_ecs_cluster.monitoring.id
+  task_definition = aws_ecs_task_definition.prometheus.arn
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets         = ["<SUBNET_ID>"]
+    security_groups = [aws_security_group.ecs_sg.id]
+    assign_public_ip = true
+  }
+
+  desired_count = 1
+}
+
+resource "aws_ecs_service" "grafana" {
+  name            = "grafana-service"
+  cluster         = aws_ecs_cluster.monitoring.id
+  task_definition = aws_ecs_task_definition.grafana.arn
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets         = ["<SUBNET_ID>"]
+    security_groups = [aws_security_group.ecs_sg.id]
+    assign_public_ip = true
+  }
+
+  desired_count = 1
+}
+
+
+
+
