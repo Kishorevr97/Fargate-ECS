@@ -219,8 +219,8 @@ resource "aws_ecs_task_definition" "grafana" {
       ]
       portMappings = [
         {
-          containerPort = 3000
-          hostPort      = 3000
+          containerPort = 3010
+          hostPort      = 3010
         }
       ]
       logConfiguration = {
