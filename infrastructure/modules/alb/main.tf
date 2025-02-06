@@ -143,7 +143,7 @@ resource "aws_lb_listener_rule" "prometheus_rule" {
 
   condition {
     path_pattern {
-      values = ["/9090"]
+      values = ["/prometheus"]
     }
   }
 
@@ -160,7 +160,7 @@ resource "aws_lb_listener_rule" "grafana_rule" {
 
   condition {
     path_pattern {
-      values = ["/3010"]
+      values = ["/grafana"]
     }
   }
 
