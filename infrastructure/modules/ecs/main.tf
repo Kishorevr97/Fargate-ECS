@@ -169,7 +169,8 @@ resource "aws_ecs_task_definition" "prometheus" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 512
   memory                   = 1024
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = var.execution_role_arn
+  task_role_arn            = var.task_role_arn
 
   container_definitions = jsonencode([
     {
@@ -182,6 +183,19 @@ resource "aws_ecs_task_definition" "prometheus" {
           hostPort      = 9090
         }
       ]
+     environment = [
+        { name = "S3_BUCKET", value = aws_s3_bucket.prometheus_bucket.bucket },
+        { name = "PROMETHEUS_CONFIG_PATH", value = "/etc/prometheus/prometheus.yml" }
+      ]
+
+    logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/prometheus"
+          awslogs-region        = "eu-north-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 }
@@ -191,6 +205,8 @@ resource "aws_ecs_task_definition" "grafana" {
   family                   = "grafana-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
+  execution_role_arn       = var.execution_role_arn
+  task_role_arn            = var.task_role_arn
   cpu                      = 512
   memory                   = 1024
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
@@ -212,6 +228,15 @@ resource "aws_ecs_task_definition" "grafana" {
           hostPort      = 3000
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/grafana"
+          awslogs-region        = "eu-north-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+     
     }
   ])
 }
@@ -224,8 +249,8 @@ resource "aws_ecs_service" "prometheus" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = ["<SUBNET_ID>"]
-    security_groups = [aws_security_group.ecs_sg.id]
+    subnets         = var.public_subnet_ids
+    security_groups = [var.ecs_security_group_id]
     assign_public_ip = true
   }
 
@@ -239,8 +264,8 @@ resource "aws_ecs_service" "grafana" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = ["<SUBNET_ID>"]
-    security_groups = [aws_security_group.ecs_sg.id]
+    subnets         = var.public_subnet_ids
+    security_groups = [var.ecs_security_group_id]
     assign_public_ip = true
   }
 
