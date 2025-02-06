@@ -46,6 +46,47 @@ resource "aws_lb_target_group" "appointment_tg" {
   }
 }
 
+
+##prometheus##
+
+resource "aws_lb_target_group" "prometheus_tg" {
+  name     = "appointment-tg"
+  port     = 9090
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+  target_type = "ip"
+  health_check {
+    path                = "/health"      
+    protocol            = "HTTP"
+    interval            = 30             
+    timeout             = 5               
+    healthy_threshold   = 3               
+    unhealthy_threshold = 3           
+    matcher             = "200"          
+  }
+}
+
+
+resource "aws_lb_target_group" "grafana_tg" {
+  name     = "appointment-tg"
+  port     = 3010
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+  target_type = "ip"
+  health_check {
+    path                = "/health"      
+    protocol            = "HTTP"
+    interval            = 30             
+    timeout             = 5               
+    healthy_threshold   = 3               
+    unhealthy_threshold = 3           
+    matcher             = "200"          
+  }
+}
+
+
+
+
 # Single ALB Listener on port 80
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.application_load_balancer.arn
@@ -92,3 +133,41 @@ resource "aws_lb_listener_rule" "appointment_rule" {
     target_group_arn = aws_lb_target_group.appointment_tg.arn
   }
 }
+
+
+#prometheus##
+
+resource "aws_lb_listener_rule" "prometheus_rule" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 200
+
+  condition {
+    path_pattern {
+      values = ["/9090"]
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.prometheus_tg.arn
+  }
+}
+
+
+resource "aws_lb_listener_rule" "grafana_rule" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 200
+
+  condition {
+    path_pattern {
+      values = ["/3010"]
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.grafana_tg.arn
+  }
+}
+
+
