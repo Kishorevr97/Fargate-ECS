@@ -175,7 +175,7 @@ resource "aws_ecs_task_definition" "prometheus" {
   container_definitions = jsonencode([
     {
       name      = "prometheus"
-      image     = "prom/prometheus:v2.37.0"
+      image     = "prom/prometheus:latest"
       essential = true
       portMappings = [
         {
@@ -209,7 +209,7 @@ resource "aws_ecs_task_definition" "grafana" {
   container_definitions = jsonencode([
     {
       name      = "grafana"
-      image     = "grafana/grafana:9.0.0"
+      image     = "grafana/grafana:latest"
       essential = true
       environment = [
         {
