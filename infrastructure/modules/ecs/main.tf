@@ -205,7 +205,6 @@ resource "aws_ecs_task_definition" "grafana" {
   task_role_arn            = var.task_role_arn
   cpu                      = 512
   memory                   = 1024
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -240,7 +239,7 @@ resource "aws_ecs_task_definition" "grafana" {
 
 resource "aws_ecs_service" "prometheus" {
   name            = "prometheus-service"
-  cluster         = aws_ecs_cluster.monitoring.id
+  cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.prometheus.arn
   launch_type     = "FARGATE"
 
@@ -255,7 +254,7 @@ resource "aws_ecs_service" "prometheus" {
 
 resource "aws_ecs_service" "grafana" {
   name            = "grafana-service"
-  cluster         = aws_ecs_cluster.monitoring.id
+  cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.grafana.arn
   launch_type     = "FARGATE"
 
