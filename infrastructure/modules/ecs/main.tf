@@ -183,11 +183,7 @@ resource "aws_ecs_task_definition" "prometheus" {
           hostPort      = 9090
         }
       ]
-     environment = [
-        { name = "S3_BUCKET", value = aws_s3_bucket.prometheus_bucket.bucket },
-        { name = "PROMETHEUS_CONFIG_PATH", value = "/etc/prometheus/prometheus.yml" }
-      ]
-
+   
     logConfiguration = {
         logDriver = "awslogs"
         options = {
