@@ -139,7 +139,7 @@ resource "aws_lb_listener_rule" "appointment_rule" {
 
 resource "aws_lb_listener_rule" "prometheus_rule" {
   listener_arn = aws_lb_listener.http.arn
-  priority     = 200
+  priority     = 300
 
   condition {
     path_pattern {
@@ -156,7 +156,7 @@ resource "aws_lb_listener_rule" "prometheus_rule" {
 
 resource "aws_lb_listener_rule" "grafana_rule" {
   listener_arn = aws_lb_listener.http.arn
-  priority     = 200
+  priority     = 400
 
   condition {
     path_pattern {
