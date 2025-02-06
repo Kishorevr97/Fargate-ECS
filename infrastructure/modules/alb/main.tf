@@ -50,7 +50,7 @@ resource "aws_lb_target_group" "appointment_tg" {
 ##prometheus##
 
 resource "aws_lb_target_group" "prometheus_tg" {
-  name     = "appointment-tg"
+  name     = "prometheus-tg"
   port     = 9090
   protocol = "HTTP"
   vpc_id   = var.vpc_id
@@ -68,7 +68,7 @@ resource "aws_lb_target_group" "prometheus_tg" {
 
 
 resource "aws_lb_target_group" "grafana_tg" {
-  name     = "appointment-tg"
+  name     = "grafana-tg"
   port     = 3010
   protocol = "HTTP"
   vpc_id   = var.vpc_id
